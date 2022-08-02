@@ -33,11 +33,9 @@ class Device:
     @property
     def by_id(self) -> Path | None:
         """Return path by-id."""
-        for link in self.links:
-            if not link.match("/dev/*/by-id/*"):
-                continue
-            return link
-        return None
+        return next(
+            (link for link in self.links if link.match("/dev/*/by-id/*")), None
+        )
 
     @staticmethod
     def import_udev(udevice: pyudev.Device) -> Device:
@@ -47,7 +45,7 @@ class Device:
             Path(udevice.device_node),
             Path(udevice.sys_path),
             udevice.subsystem,
-            None if not udevice.parent else Path(udevice.parent.sys_path),
+            Path(udevice.parent.sys_path) if udevice.parent else None,
             [Path(node) for node in udevice.device_links],
             {attr: udevice.properties[attr] for attr in udevice.properties},
             [Path(node.sys_path) for node in udevice.children],

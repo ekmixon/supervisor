@@ -59,10 +59,11 @@ def check_exception_chain(err: Exception, object_type: Any) -> bool:
     if issubclass(type(err), object_type):
         return True
 
-    if not err.__context__:
-        return False
-
-    return check_exception_chain(err.__context__, object_type)
+    return (
+        check_exception_chain(err.__context__, object_type)
+        if err.__context__
+        else False
+    )
 
 
 def get_message_from_exception_chain(err: Exception) -> str:
@@ -70,10 +71,11 @@ def get_message_from_exception_chain(err: Exception) -> str:
     if str(err):
         return str(err)
 
-    if not err.__context__:
-        return ""
-
-    return get_message_from_exception_chain(err.__context__)
+    return (
+        get_message_from_exception_chain(err.__context__)
+        if err.__context__
+        else ""
+    )
 
 
 async def remove_folder(folder: Path, content_only: bool = False) -> None:

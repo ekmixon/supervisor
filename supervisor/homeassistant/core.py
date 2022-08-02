@@ -177,7 +177,7 @@ class HomeAssistantCore(CoreSysAttributes):
         """Update HomeAssistant version."""
         version = version or self.sys_homeassistant.latest_version
         old_image = self.sys_homeassistant.image
-        rollback = self.sys_homeassistant.version if not self.error_state else None
+        rollback = None if self.error_state else self.sys_homeassistant.version
         running = await self.instance.is_running()
         exists = await self.instance.exists()
 

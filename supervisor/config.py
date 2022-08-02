@@ -160,9 +160,7 @@ class CoreConfig(FileConfiguration):
         boot_str = self._data.get(ATTR_LAST_BOOT, DEFAULT_BOOT_TIME)
 
         boot_time = parse_datetime(boot_str)
-        if not boot_time:
-            return datetime.utcfromtimestamp(1)
-        return boot_time
+        return boot_time or datetime.utcfromtimestamp(1)
 
     @last_boot.setter
     def last_boot(self, value: datetime) -> None:

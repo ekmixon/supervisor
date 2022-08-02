@@ -111,9 +111,11 @@ class SecureTarFile:
     @property
     def size(self) -> float:
         """Return backup size."""
-        if not self._name.is_file():
-            return 0
-        return round(self._name.stat().st_size / 1_048_576, 2)  # calc mbyte
+        return (
+            round(self._name.stat().st_size / 1_048_576, 2)
+            if self._name.is_file()
+            else 0
+        )
 
 
 def _generate_iv(key: bytes, salt: bytes) -> bytes:

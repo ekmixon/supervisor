@@ -45,7 +45,7 @@ class DockerAudio(DockerInterface, CoreSysAttributes):
 
         # Machine ID
         if MACHINE_ID.exists():
-            volumes.update({str(MACHINE_ID): {"bind": str(MACHINE_ID), "mode": "ro"}})
+            volumes[str(MACHINE_ID)] = {"bind": str(MACHINE_ID), "mode": "ro"}
 
         return volumes
 
@@ -70,9 +70,11 @@ class DockerAudio(DockerInterface, CoreSysAttributes):
     @property
     def cpu_rt_runtime(self) -> Optional[int]:
         """Limit CPU real-time runtime in microseconds."""
-        if not self.sys_docker.info.support_cpu_realtime:
-            return None
-        return DOCKER_CPU_RUNTIME_ALLOCATION
+        return (
+            DOCKER_CPU_RUNTIME_ALLOCATION
+            if self.sys_docker.info.support_cpu_realtime
+            else None
+        )
 
     def _run(self) -> None:
         """Run Docker image.

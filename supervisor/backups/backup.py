@@ -148,9 +148,11 @@ class Backup(CoreSysAttributes):
     @property
     def size(self):
         """Return backup size."""
-        if not self.tarfile.is_file():
-            return 0
-        return round(self.tarfile.stat().st_size / 1048576, 2)  # calc mbyte
+        return (
+            round(self.tarfile.stat().st_size / 1048576, 2)
+            if self.tarfile.is_file()
+            else 0
+        )
 
     @property
     def is_new(self):
